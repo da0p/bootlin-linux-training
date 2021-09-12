@@ -1,0 +1,82 @@
+From 7caeae003f2a0fccad97262358377c8868bea4d0 Mon Sep 17 00:00:00 2001
+From: Phuong Dao <phuong018@gmail.com>
+Date: Sun, 12 Sep 2021 06:10:56 -0500
+Subject: [PATCH] drivers: misc: hello_version: Add hello_version driver
+
+hello_version driver will show a welcome message to the user when
+loaded. When it is unloaded, it shows a goodbye message with how long
+the user used this module.
+
+Signed-off-by: Phuong Dao <phuong018@gmail.com>
+---
+ drivers/misc/Kconfig         |  6 ++++++
+ drivers/misc/Makefile        |  1 +
+ drivers/misc/hello_version.c | 30 ++++++++++++++++++++++++++++++
+ 3 files changed, 37 insertions(+)
+ create mode 100644 drivers/misc/hello_version.c
+
+diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
+index fafa8b0d8099..f2500f694fab 100644
+--- a/drivers/misc/Kconfig
++++ b/drivers/misc/Kconfig
+@@ -466,6 +466,12 @@ config HISI_HIKEY_USB
+ 	  switching between the dual-role USB-C port and the USB-A host ports
+ 	  using only one USB controller.
+ 
++config HELLO_VERSION
++	tristate "Print Linux version"
++	help
++	  If you say yes here this adds support for welcoming user and print
++	  Linux version.
++
+ source "drivers/misc/c2port/Kconfig"
+ source "drivers/misc/eeprom/Kconfig"
+ source "drivers/misc/cb710/Kconfig"
+diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
+index d23231e73330..5b9b24f00c16 100644
+--- a/drivers/misc/Makefile
++++ b/drivers/misc/Makefile
+@@ -57,3 +57,4 @@ obj-$(CONFIG_HABANA_AI)		+= habanalabs/
+ obj-$(CONFIG_UACCE)		+= uacce/
+ obj-$(CONFIG_XILINX_SDFEC)	+= xilinx_sdfec.o
+ obj-$(CONFIG_HISI_HIKEY_USB)	+= hisi_hikey_usb.o
++obj-$(CONFIG_HELLO_VERSION)     += hello_version.o
+diff --git a/drivers/misc/hello_version.c b/drivers/misc/hello_version.c
+new file mode 100644
+index 000000000000..8774fc639de7
+--- /dev/null
++++ b/drivers/misc/hello_version.c
+@@ -0,0 +1,30 @@
++// SPDX-License-Identifier: BSD-3-Clause
++#include <linux/init.h>
++#include <linux/module.h>
++#include <linux/utsname.h>
++#include <linux/ktime.h>
++
++MODULE_LICENSE("GPL");
++
++static char *msg = "World";
++module_param(msg, charp, 0644);
++MODULE_PARM_DESC(msg, "Name to be greeted");
++
++static time64_t start_time;
++
++static int __init hello_init(void)
++{
++	pr_alert("Hello %s. You are usng Linux version %s\n", msg,
++			utsname()->release);
++	start_time = ktime_get_seconds();
++	return 0;
++}
++
++static void __exit hello_exit(void)
++{
++	pr_alert("Goodbye. Thanks for using this module for %lld seconds\n",
++			ktime_get_seconds() - start_time);
++}
++
++module_init(hello_init);
++module_exit(hello_exit);
+-- 
+2.33.0
+
