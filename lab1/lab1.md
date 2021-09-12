@@ -25,7 +25,7 @@ Run the following command on the terminal
 nm-connection-editor
 ```
 Then edit the ethernet connection as the following figure
-![plot](media/lab1/connection-editor.png)
+![plot](../media/lab1/connection-editor.png)
 
 Now we can ping our host computer from U-Boot
 ```
@@ -66,4 +66,5 @@ Loading: #
          810000f0: 00000000 00000000 00000000 00000000    ................
          => 
 ```
+
 

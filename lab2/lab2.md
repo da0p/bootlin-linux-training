@@ -54,22 +54,27 @@ in $(LINUX_KERNEL_DIRECTORY)/arch/arm/boot/dts.
 
 Now let's get back to U-Boot and configure the environment variable.
 ```
+
 # set ip address for beaglebone
 setenv ipaddr 192.168.0.100   
+
 # set host ip address
 setenv serverip 192.168.0.1 
 
+
 # set up nfs server and transfer data via ethernet
 setenv bootargs root=/dev/nfs rw nfsroot=192.168.0.1:/home/dao/Workspace/nfsroot,v3,tcp ip=192.168.0.100:192.168.0.1:192.168.0.1:255.255.255.0::eth0:off console=ttyS0,115200n8
+
 
 # copy the kernel and dtb in RAM
 tftp 0x81000000 zImage
 tftp 0x82000000 am335x-boneblack.dtb
 
+
 # boot the image without initramfs
 bootz 0x81000000 - 0x82000000
 ```
-![plot](media/lab2/setup.png)
+![plot](../media/lab2/setup.png)
 
 If you have trouble with tftp server and nfs, just restart the services
 
@@ -78,5 +83,6 @@ sudo /etc/init.d/tftpd-hpa restart
 
 sudo /etc/init.d/nfs-kernel-server restart
 ```
-![plot](media/lab2/result.png)
+![plot](../media/lab2/result.png)
+
 
